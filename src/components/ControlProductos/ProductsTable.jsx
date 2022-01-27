@@ -37,15 +37,10 @@ const ProductsTable = ({data, handleSelectProducto, handleDelete, usuario, total
             <th scope="col">#</th>
             <th scope="col">Nombre</th>
             <th scope="col">Categoría</th>
-            {
-              admin ? (
-                  <>
-                  <th scope="col">Precio venta</th>
-                  </>      
-                ) : (
-                  <th scope="col">Precio</th>
-                )
-            }
+            <th scope="col">Proveedor</th>
+            <th scope="col">Precio 1</th>
+            <th scope="col">Precio 2</th>
+            <th scope="col">Precio 3</th>
             <th scope="col">Color</th>
             <th scope="col">Disponible</th>
             {
@@ -67,15 +62,10 @@ const ProductsTable = ({data, handleSelectProducto, handleDelete, usuario, total
               <th scope="row">{index+1}</th>
               <td>{producto.name}</td>
               <td>{producto.categoria}</td>
-              {
-                admin ? (
-                  <>
-                  <td>{producto.precioVenta ? `Q.${producto.precioVenta}` : "---"}</td>
-                  </>
-                ) : (
-                  <td>{producto.precioVenta ? `Q.${producto.precioVenta}` : "---"}</td>
-                )
-              }
+              <td>{producto.proveedor ? `${producto.proveedor}` : "---"}</td>
+              <td>{producto.precioVenta1 ? `Q.${producto.precioVenta1}` : "---"}</td>
+              <td>{producto.precioVenta2 ? `Q.${producto.precioVenta2}` : "---"}</td>
+              <td>{producto.precioVenta3 ? `Q.${producto.precioVenta3}` : "---"}</td>
               <td>{producto.color ? producto.color : '---'}</td>
               <td>{producto.disponible ? producto.disponible : 0}</td>
               {

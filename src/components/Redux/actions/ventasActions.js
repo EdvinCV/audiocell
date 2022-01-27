@@ -250,10 +250,13 @@ export const agregarProductoCarrito = (producto) => {
             const state = getState();
             const productosCarrito = state.ventas.productosSeleccionados;
             let productoExistente = false;
+            console.log("PROXXX",producto);
             if((producto.name).includes("Kit") || (producto.name).includes("Accesorios") || (producto.name).includes("SIM")){
                 producto = {
                     ...producto,
-                    precioVenta: parseInt(producto.precioVenta),
+                    precioVenta1: parseInt(producto.precioVenta1),
+                    precioVenta2: parseInt(producto.precioVenta2),
+                    precioVenta3: parseInt(producto.precioVenta3),
                     stock: parseInt(producto.stock),
                     idProducto: producto.id,
                     precioFinal: parseInt(producto.precioVenta)

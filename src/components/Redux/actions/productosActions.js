@@ -138,7 +138,8 @@ export const editarProducto = (producto) => {
                 const productos = await clientToken.get('api/producto', {params: {page: 1, buscador: ''}});
                 dispatch({
                     type: EDITAR_PRODUCTO,
-                    productos: productos.data.productos
+                    productos: productos.data.productos,
+                    productosNoDisponibles: productos.data.productosNoDisponibles
                 });
                 Swal.fire(
                     'Producto editado correctamente.',

@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import {obtenerProductosVenta} from '../Redux/actions/productosActions';
 import { useSelector, useDispatch } from 'react-redux';
-import ProductoCard from './ProductoCard';
 import CardItem from './CardItem';
 import { obtenerCaja } from '../Redux/actions/cajaActions';
 import VentaForm from './VentaForm';
 import Loader from 'react-loader-spinner';
 import { useReactToPrint } from 'react-to-print';
 import Recibo from './Recibo';
+import ProductoCard from './ProductoCard';
 
 const ListadoProductos = () => {
     // DISPATCH
@@ -48,7 +48,7 @@ const ListadoProductos = () => {
             if(productos){
                 const nuevosProductos = productos.filter(
                     (prod) => 
-                        (prod.name.search(buscador) !== -1) ||  (prod.producto.search(buscador) !== -1));
+                        (prod.name.toLowerCase().search(buscador) !== -1) ||  (prod.producto.toLowerCase().search(buscador) !== -1));
                 setProductosSeleccionados(nuevosProductos);
             }
         } else {
@@ -111,12 +111,9 @@ const ListadoProductos = () => {
                 />
                 <div className="productosCategoria">
                 {
-                        productosSeleccionados.map((prod) => (
-                            <ProductoCard
-                                key={prod.id}
-                                {...prod}
-                            />
-                        ))
+                    <ProductoCard 
+                        productos={productosSeleccionados}
+                    />
                 }
                 </div>
             </div>

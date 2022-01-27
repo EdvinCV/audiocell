@@ -96,11 +96,39 @@ const ProductoForm = (props) => {
                 </div>
                 <div className="mb-3">
                     <Field
-                        name="precioVenta"
+                        name="proveedor"
+                        type="text"
+                        component={renderField}
+                        label="Proveedor"
+                        placeholder="Ingrese proveedor"
+                        validate={maxLength50}
+                    />
+                </div>
+                <div className="mb-3">
+                    <Field
+                        name="precioVenta1"
                         type="number"
                         component={renderField}
                         placeholder="Ingrese el precio de venta"
-                        label="Precio Venta"
+                        label="Precio Venta 1"
+                    />
+                </div>
+                <div className="mb-3">
+                    <Field
+                        name="precioVenta2"
+                        type="number"
+                        component={renderField}
+                        placeholder="Ingrese el precio de venta"
+                        label="Precio Venta 2"
+                    />
+                </div>
+                <div className="mb-3">
+                    <Field
+                        name="precioVenta3"
+                        type="number"
+                        component={renderField}
+                        placeholder="Ingrese el precio de venta"
+                        label="Precio Venta 3"
                     />
                 </div>
                 <div className="mb-3">

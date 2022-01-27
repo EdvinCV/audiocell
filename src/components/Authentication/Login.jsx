@@ -28,7 +28,7 @@ const Login = () => {
                 <div
                     style={{borderRadius:"80px", opacity:0.8, maxWidth:"200px"}}
                 >
-                    <img className="card-img-top" src="icons/logo.png" alt="AudioCell-El sonido es tu voz" style={{width:"400px", margin:"0 auto"}}/>
+                    <img className="card-img-top" src="icons/logo" alt="AudioCell-El sonido es tu voz" style={{width:"400px", margin:"0 auto"}}/>
                 </div>
                 <div className="card-body">
                     <LoginForm

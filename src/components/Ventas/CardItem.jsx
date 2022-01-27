@@ -28,7 +28,7 @@ const CardItem = ({producto}) => {
 
     return(
         <div className="CardItem">
-            <h6><b>{producto.name}</b></h6>
+            <h6 style={{color: producto.name.includes("Kit Liberado Claro") ? "orange" : producto.name.includes("Kit Claro") ? "red" : producto.name.includes("Kit Liberado Tigo") ? "yellow" : producto.name.includes("Kit Tigo") ? "blue" : "gray"}}><b>{producto.name}</b></h6>
             <div>{producto.producto}</div>
             {
                 (producto.name).includes("Epin") ? (
@@ -41,7 +41,7 @@ const CardItem = ({producto}) => {
                 ) : (
                     <>
                         <div>Color: {producto.color ? producto.color: "-"}</div>
-                        <div>Precio: {producto.precioVenta ? producto.precioVenta : "-"}</div>
+                        <div>Precio: Q{producto.precioVenta1}{producto.precioVenta2 ? `-Q${producto.precioVenta2}` : ""}{producto.precioVenta3 ? `-Q${producto.precioVenta3}` : ""}</div>
                         <br />
                         <input
                             className="form-control"

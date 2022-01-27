@@ -199,8 +199,8 @@ const Productos = () => {
     }
     // Submit editar producto
     const handleSubmitEdit = (values) => {
-        dispatch(editarProducto(values));
         setShowFormEdit(false);
+        dispatch(editarProducto(values));
         setLoading(false);
     }
     // Cambiar valor del buscador

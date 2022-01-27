@@ -29,7 +29,7 @@ const Navbar = () => {
                     className="navbar-brand mb-0 h1"
                     onClick={() => history.push("/home")}
                 >
-                    <img src="icons/logo.png" width="120px" alt="BusinessIntelligence" className="mr-2" />
+                    <img src="icons/logo" width="100px" alt="AudioCell" className="mr-2" />
                     - {usuario && usuario.name}
                 </span>
                 <span

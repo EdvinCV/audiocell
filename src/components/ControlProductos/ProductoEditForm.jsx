@@ -14,8 +14,8 @@ const validate = values => {
     if(!values.presentacion){
         errors.presentacion = "Campo requerido";
     }
-    if(!values.precio){
-        errors.precio = "Campo requerido";
+    if(values.precioVenta1 === "" || values.precioVenta1 <= 0){
+        errors.precioVenta1 = "Campo requerido";
     }
     if(!values.stock){
         errors.stock = "Campo requerido";
@@ -60,11 +60,39 @@ let ProductoEditForm = (props) => {
             </div>
             <div className="mb-3">
                 <Field
-                    name="precioVenta"
+                    name="proveedor"
+                    type="text"
+                    component={renderField}
+                    placeholder="Ingrese proveedor"
+                    label="Proveedor"
+                />
+            </div>
+            <div className="mb-3">
+                <Field
+                    name="precioVenta1"
                     type="number"
                     component={renderField}
                     placeholder="Ingrese el precio de venta"
-                    label="Precio Venta"
+                    label="Precio Venta 1"
+                    required
+                />
+            </div>
+            <div className="mb-3">
+                <Field
+                    name="precioVenta2"
+                    type="number"
+                    component={renderField}
+                    placeholder="Ingrese el precio de venta"
+                    label="Precio Venta 2"
+                />
+            </div>
+            <div className="mb-3">
+                <Field
+                    name="precioVenta3"
+                    type="number"
+                    component={renderField}
+                    placeholder="Ingrese el precio de venta"
+                    label="Precio Venta 3"
                 />
             </div>
             <div>

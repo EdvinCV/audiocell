@@ -147,7 +147,6 @@ const VentaForm = ({setPrintRecibo}) => {
                         placeholder="Ingrese número de teléfono"
                         onInput={(e) => e.target.value = e.target.value.slice(0, 8)}
                         onChange={handleInputChange}
-                        required
                     />
                     {/* IMEI DEL TELÉFONO */}
                     <label htmlFor="">IMEI</label>
@@ -158,7 +157,6 @@ const VentaForm = ({setPrintRecibo}) => {
                         placeholder="Ingrese IMEI"
                         onInput={(e) => e.target.value = e.target.value.slice(0, 20)}
                         onChange={handleInputChange}
-                        required
                     />
                     {/* ICC DEL TELEFONO */}
                     <label htmlFor="">ICC</label>
@@ -169,7 +167,6 @@ const VentaForm = ({setPrintRecibo}) => {
                         placeholder="Ingrese ICC"
                         onInput={(e) => e.target.value = e.target.value.slice(0, 20)}
                         onChange={handleInputChange}
-                        required
                     />
                 </>
             }
