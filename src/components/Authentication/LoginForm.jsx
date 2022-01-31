@@ -20,12 +20,12 @@ const renderField = ({
     }) => (
     <div>
       <div
-        style={{maxWidth:"300px", margin:"0 auto"}}
+        style={{maxWidth:"300px", margin:"0 auto", opacity: "0.5"}}
       >
         <input {...input} placeholder={label} type={type} className="form-control" />
         <br/>
         {touched &&
-          ((error && <span>{error}</span>) ||
+          ((error && <span style={{color: "white"}}>{error}</span>) ||
             (warning && <span>{warning}</span>))}
       </div>
     </div>
@@ -45,23 +45,24 @@ const LoginForm = (props) => {
                     name="username"
                     type="text"
                     component={renderField}
-                    label="Usuario"
+                    label="Ingrese Usuario"
                 />
                 <br/>
                 <Field
                     name="password"
                     type="password"
                     component={renderField}
-                    label="Contraseña"
+                    label="Ingrese Contraseña"
                     
                 />
             </div>
+            <br /><br />
             <div>
                 <button 
                     type="submit"
                     className="mt-2 btn btn-block btn-primary"
                 >
-                Ingresar
+                INGRESAR
                 </button>
             </div>
         </form>

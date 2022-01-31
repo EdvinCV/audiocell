@@ -20,6 +20,24 @@ const validate = values => {
     if(!values.name){
         errors.name = "Campo requerido";
     }
+    if(!values.precioVenta){
+        errors.precioVenta = "Campo requerido";
+    }
+    if(values.precioVenta){
+        if(parseInt(values.precioVenta) < 0){
+            errors.precioVenta = "Valor inválido";
+        }
+    }
+    if(values.precioVenta2){
+        if(parseInt(values.precioVenta2) < 0){
+            errors.precioVenta2 = "Valor inválido";
+        }
+    }
+    if(values.precioVenta3){
+        if(parseInt(values.precioVenta3) < 0){
+            errors.precioVenta3 = "Valor inválido";
+        }
+    }
 
     return errors;
 }
@@ -81,68 +99,63 @@ const ProductoForm = (props) => {
                     validate={maxLength50}
                 />
             </div>
-            {
-                showForm &&
-                <>
-                <div className="mb-3">
-                    <Field
-                        name="color"
-                        type="text"
-                        component={renderField}
-                        label="Color"
-                        placeholder="Ingrese el color"
-                        validate={maxLength50}
-                    />
-                </div>
-                <div className="mb-3">
-                    <Field
-                        name="proveedor"
-                        type="text"
-                        component={renderField}
-                        label="Proveedor"
-                        placeholder="Ingrese proveedor"
-                        validate={maxLength50}
-                    />
-                </div>
-                <div className="mb-3">
-                    <Field
-                        name="precioVenta1"
-                        type="number"
-                        component={renderField}
-                        placeholder="Ingrese el precio de venta"
-                        label="Precio Venta 1"
-                    />
-                </div>
-                <div className="mb-3">
-                    <Field
-                        name="precioVenta2"
-                        type="number"
-                        component={renderField}
-                        placeholder="Ingrese el precio de venta"
-                        label="Precio Venta 2"
-                    />
-                </div>
-                <div className="mb-3">
-                    <Field
-                        name="precioVenta3"
-                        type="number"
-                        component={renderField}
-                        placeholder="Ingrese el precio de venta"
-                        label="Precio Venta 3"
-                    />
-                </div>
-                <div className="mb-3">
-                    <Field
-                        name="descripcion"
-                        type="text"
-                        component={renderField}
-                        placeholder="Ingrese la descripción"
-                        label="Descripción"
-                        validate={maxLength200}
-                    />
-                </div>
-                </>
-            }
+            <div className="mb-3">
+                <Field
+                    name="color"
+                    type="text"
+                    component={renderField}
+                    label="Color"
+                    placeholder="Ingrese el color"
+                    validate={maxLength50}
+                />
+            </div>
+            <div className="mb-3">
+                <Field
+                    name="proveedor"
+                    type="text"
+                    component={renderField}
+                    label="Proveedor"
+                    placeholder="Ingrese proveedor"
+                    validate={maxLength50}
+                />
+            </div>
+            <div className="mb-3">
+                <Field
+                    name="precioVenta"
+                    type="number"
+                    component={renderField}
+                    placeholder="Ingrese el precio de venta"
+                    label="Precio Venta 1"
+                />
+            </div>
+            <div className="mb-3">
+                <Field
+                    name="precioVenta2"
+                    type="number"
+                    component={renderField}
+                    placeholder="Ingrese el precio de venta"
+                    label="Precio Venta 2"
+                />
+            </div>
+            <div className="mb-3">
+                <Field
+                    name="precioVenta3"
+                    type="number"
+                    component={renderField}
+                    placeholder="Ingrese el precio de venta"
+                    label="Precio Venta 3"
+                />
+            </div>
+            <div className="mb-3">
+                <Field
+                    name="descripcion"
+                    type="text"
+                    component={renderField}
+                    placeholder="Ingrese la descripción"
+                    label="Descripción"
+                    validate={maxLength200}
+                />
+            </div>
             <div>
                 <button 
                     type="submit"

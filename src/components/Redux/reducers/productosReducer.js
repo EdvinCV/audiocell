@@ -1,6 +1,6 @@
 // ACTION TYPES
 
-import {OBTENER_PRODUCTOS, CREAR_PRODUCTO, SELECTED_PRODUCT, EDITAR_PRODUCTO, OBTENER_TOTAL_PRODUCTOS, OBTENER_REPORTE_PRODUCTOS, OBTENER_LISTADO_STOCK, OBTENER_PRODUCTOS_VENTA, OBTENER_REPORTE_STOCK, CLEAR_PRODUCTOS, OBTENER_TOTAL_INVERTIDO, ELIMINAR_STOCK} from "../actionTypes";
+import {OBTENER_PRODUCTOS, CREAR_PRODUCTO, SELECTED_PRODUCT, EDITAR_PRODUCTO, OBTENER_TOTAL_PRODUCTOS, OBTENER_REPORTE_PRODUCTOS, OBTENER_LISTADO_STOCK, OBTENER_PRODUCTOS_VENTA, OBTENER_REPORTE_STOCK, CLEAR_PRODUCTOS, OBTENER_TOTAL_INVERTIDO, ELIMINAR_STOCK, GET_CATEGORY_REPORT} from "../actionTypes";
 
 
 // INITIAL STATE
@@ -15,7 +15,8 @@ const initialState = {
     totalProductos: null,
     totalInvertido: null,
     reporteProductos: null,
-    reporteStock: null
+    reporteStock: null,
+    categoryReport: null
 };
 
 // REDUCER FUNCTION
@@ -75,6 +76,11 @@ const productosReducer = (state = initialState, action) => {
             return {
                 ...state,
                 reporteStock: action.productos
+            }
+        case GET_CATEGORY_REPORT:
+            return {
+                ...state,
+                categoryReport: action.products
             }
         case ELIMINAR_STOCK:
             return {

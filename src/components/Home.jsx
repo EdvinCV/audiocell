@@ -82,9 +82,17 @@ const Home = () => {
                     onClick={() => history.push("/canceladas")}
                 >
                     <img  className="icon" src="icons/cancelaciones.png" width="50px" alt="CANCELACIONES"></img>
-                    <p className="texto">CANCELACIONES</p>
+                    <p className="texto">CANCELADAS</p>
                 </div>
                 < div className="contenedor0" id="cero" /> 
+                <div 
+                    className="contenedor1"
+                    id="uno"
+                    onClick={() => history.push("/recargas")}
+                >
+                    <img  className="icon" src="icons/sim-card.png" width="50px" alt="VENTAS"></img>
+                    <p className="texto">RECARGAS</p>
+                </div>
             </div>
             </>
         );

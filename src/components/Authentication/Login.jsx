@@ -23,20 +23,18 @@ const Login = () => {
 
     return (
         <div className="log-container">
-        <div className="log-card">
-            <div className="card-login" style={{backgroundColor: "#343d52"}}>
-                <div
-                    style={{borderRadius:"80px", opacity:0.8, maxWidth:"200px"}}
-                >
-                    <img className="card-img-top" src="icons/logo" alt="AudioCell-El sonido es tu voz" style={{width:"400px", margin:"0 auto"}}/>
-                </div>
-                <div className="card-body">
-                    <LoginForm
-                        onSubmit={handleLogin}
-                    />
+            <div className="log-card">
+                <div className="card-login" style={{display: "flex", flexDirection: "column", alignContent: "center"}}>
+                    <div>
+                        <img className="card-img-top" src="icons/logo" alt="AudioCell-El sonido es tu voz" style={{width:"300px"}}/>
+                    </div>
+                    <div className="card-body">
+                        <LoginForm
+                            onSubmit={handleLogin}
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
     );
 }

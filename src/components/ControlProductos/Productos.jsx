@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import ProductsTable from './ProductsTable';
 import {useDispatch, useSelector} from 'react-redux';
-import { obtenerProductos, crearProducto, seleccionarProducto, editarProducto, deleteProducto, obtenerTotalProductos, getReporteProductos, crearProductoStock, obtenerListadoStock, getReporteProductosStock, obtenerTotalInvertido } from '../Redux/actions/productosActions';
+import { obtenerProductos, crearProducto, seleccionarProducto, editarProducto, deleteProducto, obtenerTotalProductos, getReporteProductos, crearProductoStock, obtenerListadoStock, getReporteProductosStock, obtenerTotalInvertido, getCategoryReport } from '../Redux/actions/productosActions';
 import { obtenerUsuario } from '../Redux/actions/usersActions';
 import ProductoForm from './ProductoForm';
 import { Modal, Tabs, Tab } from 'react-bootstrap';
@@ -13,6 +13,7 @@ import { clientToken } from '../../config/axios';
 import ProductoStockForm from './ProductoStockForm';
 import ListadoStock from './ListadoStock';
 import ReporteStock from './ReporteStock';
+import CategoryReport from './CategoryReport';
 
 const Productos = () => {
     // Mostrar formulario de creacion.
@@ -29,6 +30,8 @@ const Productos = () => {
         fechaInicio: null,
         fechaFin: null
     });
+    // Category input
+    const [categoryInput, setCategoryInput] = useState(null);
 
     const handleInputChangeReporte = (e) => {
         setFormFechasReporte({...formFechasReporte,[e.target.name] : e.target.value});
@@ -53,6 +56,7 @@ const Productos = () => {
     const listadoStock = useSelector((state) => state.productos.listadoStock);
     const reporteStock = useSelector((state) => state.productos.reporteStock);
     const totalInvertido = useSelector((state) => state.productos.totalInvertido);
+    const categoryReport = useSelector((state) => state.productos.categoryReport);
     
     // Obtener data del store
     useEffect(() => {
@@ -264,6 +268,19 @@ const Productos = () => {
                 );
             } else {
                 dispatch(getReporteProductosStock(formFechasReporte));
+            }
+    }
+
+    // Get category report
+    const handleCategoryReport = () => {
+            if(categoryInput === null || categoryInput === "0"){
+                Swal.fire(
+                    'Debe seleccionar una categoría.',
+                    'AudioCell-El sonido es tu voz.',
+                    'error'
+                );
+            } else {
+                dispatch(getCategoryReport(categoryInput));
             }
     }
 
@@ -615,6 +632,50 @@ const Productos = () => {
                 }
             </div>
             </div>
+                </Tab>
+                <Tab eventKey="categorias" title="Reporte categoría">
+                <div className="contenedor-ventas">
+                    <h1>Reporte Categorías</h1>
+                    <div
+                        style={{display: "flex", justifyContent:"space-around", flexWrap:"wrap"}}
+                    >
+                        <div>
+                            <label htmlFor="">Categoría</label>
+                            <select 
+                                className="form-select form-select-sm" 
+                                aria-label=".form-select-sm example"
+                                value={categoryInput}
+                                onChange={(e) => {setCategoryInput(e.target.value)}}
+                            >
+                                <option value={0} >Seleccione una categoría</option>
+                                {
+                                    categorias && (
+                                        categorias.map((c) => (
+                                            <option value={c.id} key={c.id}>{c.name}</option>
+                                        ))
+                                    )
+                                }
+                            </select>
+                        </div>
+                        <button
+                            className="btn btn-primary mt-2"
+                            onClick={handleCategoryReport}
+                        >
+                            Generar reporte
+                        </button>
+                    </div>
+                    <hr />
+                    <div
+                        style={{overflowY: "scroll", maxHeight: "400px"}}
+                    >
+                        {
+                            <CategoryReport 
+                                data={categoryReport}
+                                usuario={usuario}
+                            />
+                        }
+                    </div>
+                </div>
                 </Tab>
                 {
                     admin &&

@@ -13,6 +13,7 @@ import { Tab } from 'bootstrap';
 import ReporteUsuarios from './ReporteUsuarios';
 import ReporteGanancias from './ReporteGanancias';
 import { obtenerUsuario } from '../Redux/actions/usersActions';
+import { obtenerCategorias } from '../Redux/actions/categoriasActions';
 import { Redirect } from 'react-router-dom';
 import VentasEncabezosTable from './VentasEncabezadosTable';
 
@@ -40,6 +41,7 @@ const ControlVentas = () => {
     // Obtener ventas
     useEffect(() => {
         dispatch(obtenerUsuario());
+        dispatch(obtenerCategorias());
     }, [dispatch])
 
     const usuarioVerificacion = useSelector((state) => state.usuarios);
@@ -49,6 +51,7 @@ const ControlVentas = () => {
     const reporteGanancias = useSelector((state) => state.ventas.reporteGanancias);
     const ventaSeleccionada = useSelector((state) => state.ventas.ventaSeleccionada);
     const reporteEncabezados = useSelector((state) => state.ventas.encabezadosHoy);
+    const categorias = useSelector((state) => state.categorias.categorias);
 
     const handlePrint = useReactToPrint({
         content: () => componentRef.current,

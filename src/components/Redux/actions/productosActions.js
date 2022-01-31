@@ -1,6 +1,6 @@
 // Actions types
 import {
-    OBTENER_PRODUCTOS, OBTENER_PRODUCTOS_ERROR, CREAR_PRODUCTO, SELECTED_PRODUCT, EDITAR_PRODUCTO, OBTENER_TOTAL_PRODUCTOS, OBTENER_REPORTE_PRODUCTOS, OBTENER_LISTADO_STOCK, OBTENER_PRODUCTOS_VENTA, OBTENER_REPORTE_STOCK, ELIMINAR_STOCK, OBTENER_TOTAL_INVERTIDO
+    OBTENER_PRODUCTOS, OBTENER_PRODUCTOS_ERROR, CREAR_PRODUCTO, SELECTED_PRODUCT, EDITAR_PRODUCTO, OBTENER_TOTAL_PRODUCTOS, OBTENER_REPORTE_PRODUCTOS, OBTENER_LISTADO_STOCK, OBTENER_PRODUCTOS_VENTA, OBTENER_REPORTE_STOCK, ELIMINAR_STOCK, OBTENER_TOTAL_INVERTIDO, GET_CATEGORY_REPORT
 } from '../actionTypes';
 // ACTIONS DE AUTENTICACION
 import {clientToken} from '../../../config/axios';
@@ -270,6 +270,20 @@ export const obtenerTotalInvertido = () => {
                 });
             }
         } catch(error) {
+            console.log(error);
+        }
+    }
+}
+
+export const getCategoryReport = (category) => {
+    return async(dispatch) => {
+        try {
+            const {data} = await clientToken.get('api/producto/categories', {params: {category}});
+            dispatch({
+                type: GET_CATEGORY_REPORT,
+                products: data.productos
+            });
+        } catch(error){
             console.log(error);
         }
     }

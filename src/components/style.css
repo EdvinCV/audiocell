@@ -198,7 +198,7 @@
     text-align: center;
 }
 div.contenedor1{
-    width: 180px;
+    width: 160px;
     height: 200px;
     float:left;
     border-radius: 50px;
@@ -259,4 +259,11 @@ div.contenedor1:hover p.texto{
 }
 div.contenedor1:hover img.icon{
     -webkit-box-shadow:0px 0px 0px 10px rgba(255, 255, 255, 0.5);
+}
+
+.divDispositivo {
+    background-color: #1a759f;
+    width: 150px;
+    border-radius: 20px;
+    height: 150px;
 }

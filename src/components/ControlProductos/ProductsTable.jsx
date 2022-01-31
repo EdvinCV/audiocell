@@ -60,10 +60,10 @@ const ProductsTable = ({data, handleSelectProducto, handleDelete, usuario, total
                 key={producto.id}
               >
               <th scope="row">{index+1}</th>
-              <td>{producto.name}</td>
-              <td>{producto.categoria}</td>
+              <td style={{minWidth: "100px"}}>{producto.name}</td>
+              <td style={{minWidth: "100px"}}>{producto.categoria}</td>
               <td>{producto.proveedor ? `${producto.proveedor}` : "---"}</td>
-              <td>{producto.precioVenta1 ? `Q.${producto.precioVenta1}` : "---"}</td>
+              <td>{producto.precioVenta ? `Q.${producto.precioVenta}` : "---"}</td>
               <td>{producto.precioVenta2 ? `Q.${producto.precioVenta2}` : "---"}</td>
               <td>{producto.precioVenta3 ? `Q.${producto.precioVenta3}` : "---"}</td>
               <td>{producto.color ? producto.color : '---'}</td>
@@ -80,7 +80,7 @@ const ProductsTable = ({data, handleSelectProducto, handleDelete, usuario, total
                       </button>
                     </div>
                   </td>
-                  <td style={{display: "flex", justifyContent: "center"}}>
+                  <td style={{marginLeft: "20px"}}>
                     <div style={{marginLeft: "2px"}}>
                       <button className="btn btn-warning" onClick={() => {handleSelectProducto(producto)}}>
                         <FaEdit 

@@ -15,6 +15,7 @@ import ListUsers from './components/Users/ListUsers';
 import './index.css';
 import ListadoVentasCanceladas from './components/Ventas/ListadoVentasCanceladas';
 import { obtenerUsuario } from './components/Redux/actions/usersActions';
+import ControlRecargas from './components/Recargas/ControlRecargas';
 
 function App() {
   
@@ -37,6 +38,7 @@ function App() {
               <Route exact path="/caja" component={ControlCaja} />
               <Route exact path="/cajas" component={ListadoCajas} />
               <Route exact path="/canceladas" component={ListadoVentasCanceladas} />
+              <Route exact path="/recargas" component={ControlRecargas} />
           </VerificationAuth>
         </Switch>
       </Provider>
