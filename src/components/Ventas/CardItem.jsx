@@ -41,7 +41,7 @@ const CardItem = ({producto}) => {
                 ) : (
                     <>
                         <div>Color: {producto.color ? producto.color: "-"}</div>
-                        <div>Precio: Q{producto.precioVenta1}{producto.precioVenta2 ? `-Q${producto.precioVenta2}` : ""}{producto.precioVenta3 ? `-Q${producto.precioVenta3}` : ""}</div>
+                        <div>Precio: Q{producto.precioVenta}{producto.precioVenta2 ? `-Q${producto.precioVenta2}` : ""}{producto.precioVenta3 ? `-Q${producto.precioVenta3}` : ""}</div>
                         <br />
                         <input
                             className="form-control"

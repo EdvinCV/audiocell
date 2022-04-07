@@ -22,7 +22,7 @@ class Recibo extends Component {
             >
                 {/* ENCABEZADO COMPROBANTE */}
                 <div>
-                    {/* <center> <img src="icons/reciboxx.png" alt="B" width="200px"/> </center> */}
+                    <center> <img src="icons/audiocell-black.png" alt="B" width="200px"/> </center>
                 </div>
                 <div className="formatoRecibo">
                     <h5>Comprobante</h5>
@@ -109,7 +109,18 @@ class Recibo extends Component {
                 <p>
                         Los dispositivos pierden garantia si presentan rastros de humedad o golpes</p>
                 </div>
+                <p>
+                    <b>Audiocell-El sonido es tu voz</b>
+                </p>
+                <p>
+                    Venta de teléfonos, accesorios y servicio técnico.
+                </p>
+                <p>
+                    8va. Avenida 12-96 Zona 1 San Marcos
+                    Frente a terminal de buses
+                </p>
                 <p><b>GRACIAS POR SU COMPRA</b></p>
+
                 <div
                     style={{height:"4cm", marginTop:"2 cm"}}
                 >

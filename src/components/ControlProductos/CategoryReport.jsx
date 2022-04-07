@@ -4,7 +4,6 @@ import {AiFillDelete} from 'react-icons/ai';
 import {BsListCheck} from 'react-icons/bs';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { obtenerProductos } from '../Redux/actions/productosActions';
 
 const CategoryReport = ({data, usuario}) => {
     // HOOKS
@@ -24,10 +23,6 @@ const CategoryReport = ({data, usuario}) => {
         }
       }
     }, [usuario])
-
-    useEffect(() => {
-      dispatch(obtenerProductos(actualPage));
-    }, [actualPage, dispatch])
 
     return (
       <>

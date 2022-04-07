@@ -1,18 +1,35 @@
 // ACTION TYPES
 
-import {OBTENER_PRODUCTOS, CREAR_PRODUCTO, SELECTED_PRODUCT, EDITAR_PRODUCTO, OBTENER_TOTAL_PRODUCTOS, OBTENER_REPORTE_PRODUCTOS, OBTENER_LISTADO_STOCK, OBTENER_PRODUCTOS_VENTA, OBTENER_REPORTE_STOCK, CLEAR_PRODUCTOS, OBTENER_TOTAL_INVERTIDO, ELIMINAR_STOCK, GET_CATEGORY_REPORT} from "../actionTypes";
+import {
+    CREAR_PRODUCTO, 
+    SELECTED_PRODUCT, 
+    EDITAR_PRODUCTO,
+    OBTENER_REPORTE_PRODUCTOS,
+    OBTENER_LISTADO_STOCK,
+    OBTENER_PRODUCTOS_VENTA,
+    OBTENER_REPORTE_STOCK,
+    CLEAR_PRODUCTOS,
+    OBTENER_TOTAL_INVERTIDO,
+    ELIMINAR_STOCK,
+    GET_CATEGORY_REPORT,
+    GET_ALL_PRODUCTS,
+    GET_AVAILABLE_PRODUCTS,
+    GET_NOT_AVAILABLE_PRODUCTS,
+    CLEAR_STOCK_LIST,
+    ADD_PRODUCT_STOCK
+} from "../actionTypes";
 
 
 // INITIAL STATE
 const initialState = {
-    productos: [],
-    productosNoDisponibles: [],
+    availableProducts: null,
+    notAvailableProducts: null,
+    allProducts: null,
     productosVenta: null,
     listadoStock: null,
     loading: true,
     errorResponse: false,
     selectedProduct: {},
-    totalProductos: null,
     totalInvertido: null,
     reporteProductos: null,
     reporteStock: null,
@@ -22,17 +39,20 @@ const initialState = {
 // REDUCER FUNCTION
 const productosReducer = (state = initialState, action) => {
     switch(action.type){
-        case OBTENER_TOTAL_PRODUCTOS:
+        case GET_ALL_PRODUCTS:
             return {
                 ...state,
-                totalProductos: action.totalProductos
+                allProducts: action.products
             }
-        case OBTENER_PRODUCTOS:
+        case GET_AVAILABLE_PRODUCTS:
             return {
                 ...state,
-                productos: action.productos,
-                productosNoDisponibles: action.productosNoDisponibles,
-                errorResponse: false
+                availableProducts: action.products
+            }
+        case GET_NOT_AVAILABLE_PRODUCTS:
+            return {
+                ...state,
+                notAvailableProducts: action.products
             }
         case OBTENER_PRODUCTOS_VENTA:
             return {
@@ -44,12 +64,27 @@ const productosReducer = (state = initialState, action) => {
                 ...state,
                 listadoStock: action.listado
             }
+        case ADD_PRODUCT_STOCK:
+            return {
+                ...state,
+                availableProducts: action.availableProducts,
+                notAvailableProducts: action.notAvailableProducts
+            }
+        case ELIMINAR_STOCK:
+            return {
+                ...state,
+                availableProducts: action.availableProducts,
+                notAvailableProducts: action.notAvailableProducts
+            }
+        case CLEAR_STOCK_LIST:
+            return {
+                ...state,
+                listadoStock: null
+            }
         case CREAR_PRODUCTO:
             return {
                 ...state,
-                productos: action.productos,
-                productosNoDisponibles: action.productosNoDisponibles,
-                errorResponse: false
+                notAvailableProducts: action.products
             }
         case SELECTED_PRODUCT:
             return {
@@ -59,9 +94,8 @@ const productosReducer = (state = initialState, action) => {
         case EDITAR_PRODUCTO:
             return {
                 ...state,
-                productos: action.productos,
-                productosNoDisponibles: action.productosNoDisponibles,
-                errorResponse: false
+                availableProducts: action.availableProducts,
+                notAvailableProducts: action.notAvailableProducts
             }
         case OBTENER_REPORTE_PRODUCTOS:
             return {
@@ -81,12 +115,6 @@ const productosReducer = (state = initialState, action) => {
             return {
                 ...state,
                 categoryReport: action.products
-            }
-        case ELIMINAR_STOCK:
-            return {
-                ...state,
-                productos: action.productos,
-                productosNoDisponibles: action.productosNoDisponibles,
             }
         case CLEAR_PRODUCTOS:
             return initialState;

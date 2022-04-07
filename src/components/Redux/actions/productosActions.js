@@ -1,45 +1,64 @@
 // Actions types
 import {
-    OBTENER_PRODUCTOS, OBTENER_PRODUCTOS_ERROR, CREAR_PRODUCTO, SELECTED_PRODUCT, EDITAR_PRODUCTO, OBTENER_TOTAL_PRODUCTOS, OBTENER_REPORTE_PRODUCTOS, OBTENER_LISTADO_STOCK, OBTENER_PRODUCTOS_VENTA, OBTENER_REPORTE_STOCK, ELIMINAR_STOCK, OBTENER_TOTAL_INVERTIDO, GET_CATEGORY_REPORT
+    OBTENER_PRODUCTOS, OBTENER_PRODUCTOS_ERROR, CREAR_PRODUCTO, SELECTED_PRODUCT, EDITAR_PRODUCTO, OBTENER_TOTAL_PRODUCTOS, OBTENER_REPORTE_PRODUCTOS, OBTENER_LISTADO_STOCK, OBTENER_PRODUCTOS_VENTA, OBTENER_REPORTE_STOCK, ELIMINAR_STOCK, OBTENER_TOTAL_INVERTIDO, GET_CATEGORY_REPORT, GET_ALL_PRODUCTS, GET_ALL_PRODUCTS_ERROR, GET_AVAILABLE_PRODUCTS, GET_AVAILABLE_PRODUCTS_ERROR, GET_NOT_AVAILABLE_PRODUCTS, GET_NOT_AVAILABLE_PRODUCTS_ERROR, CLEAR_STOCK_LIST, ADD_PRODUCT_STOCK, ADD_PRODUCT_STOCK_ERROR
 } from '../actionTypes';
 // ACTIONS DE AUTENTICACION
 import {clientToken} from '../../../config/axios';
 import Swal from 'sweetalert2';
 
-// Obtener total de productos registrados
-export const obtenerTotalProductos = (buscador='') => {
+// Get all productos
+export const getAllProducts = () => {
     return async (dispatch) => {
         try {
-            const {data} = await clientToken.get('api/producto/total', {params: {buscador}});
+            const {data} = await clientToken.get('api/producto/all');
             dispatch({
-                type: OBTENER_TOTAL_PRODUCTOS,
-                totalProductos: data.total
+                type: GET_ALL_PRODUCTS,
+                products: data.products
             });
         } catch(error) {
             dispatch({
-                type: OBTENER_PRODUCTOS_ERROR
+                type: GET_ALL_PRODUCTS_ERROR
             });
         }
     }
 }
 
-export const obtenerProductos = (page=1,buscador='') => {
+// Get available products
+export const getAvailableProducts = (search="") => {
     return async (dispatch) => {
         try {
-            const productos = await clientToken.get('api/producto', {params: {page, buscador}});
+            const {data} = await clientToken.get('api/producto/available', {params: {search}});
+            console.log("DEITA", data);
             dispatch({
-                type: OBTENER_PRODUCTOS,
-                productos: productos.data.productos,
-                productosNoDisponibles: productos.data.productosNoDisponibles
+                type: GET_AVAILABLE_PRODUCTS,
+                products: data.products
             });
         } catch(error) {
             dispatch({
-                type: OBTENER_PRODUCTOS_ERROR
+                type: GET_AVAILABLE_PRODUCTS_ERROR
             });
         }
     }
 }
 
+// Get not available products
+export const getNotAvailableProducts = (search="") => {
+    return async (dispatch) => {
+        try {
+            const {data} = await clientToken.get('api/producto/notAvailable', {params: {search}});
+            dispatch({
+                type: GET_NOT_AVAILABLE_PRODUCTS,
+                products: data.products
+            });
+        } catch(error) {
+            dispatch({
+                type: GET_NOT_AVAILABLE_PRODUCTS_ERROR
+            });
+        }
+    }
+}
+
+// Get products to sell
 export const obtenerProductosVenta = (page=1,buscador='') => {
     return async (dispatch) => {
         try {
@@ -56,6 +75,7 @@ export const obtenerProductosVenta = (page=1,buscador='') => {
     }
 }
 
+// Get list of available stock of product
 export const obtenerListadoStock = (producto) => {
     return async (dispatch) => {
         try {
@@ -72,7 +92,21 @@ export const obtenerListadoStock = (producto) => {
     }
 }
 
-export const crearProducto = (producto, buscador='') => {
+// Clear stock list
+export const clearStockList = () => {
+    return async (dispatch) => {
+        try {
+            dispatch({
+                type: CLEAR_STOCK_LIST
+            });
+        } catch(error) {
+            console.log("CLEAR STOCK LIST ERROR");
+        }
+    }
+}
+
+// Create product
+export const crearProducto = (producto, search="") => {
     return async (dispatch) => {
         try {
             producto = {
@@ -83,7 +117,7 @@ export const crearProducto = (producto, buscador='') => {
             }
 
             await clientToken.post('api/producto', producto);
-            const productos = await clientToken.get('api/producto', {params: {page: 1, buscador}});
+            const {data} = await clientToken.get('api/producto/notAvailable', {params: {search}});
             Swal.fire(
                 'Producto creado correctamente.',
                 'AudioCell-El sonido es tu voz',
@@ -91,8 +125,7 @@ export const crearProducto = (producto, buscador='') => {
             );
             dispatch({
                 type: CREAR_PRODUCTO,
-                productos: productos.data.productos,
-                productosNoDisponibles: productos.data.productosNoDisponibles
+                products: data.products,
             });
         } catch(error){
             console.log(error);
@@ -100,22 +133,50 @@ export const crearProducto = (producto, buscador='') => {
     }
 }
 
-export const crearProductoStock = (producto) => {
+// Add product stock
+export const crearProductoStock = (producto, search="") => {
     return async (dispatch) => {
         try {
             console.log("DIS",producto);
 
             await clientToken.post('api/producto/stock', producto);
-            const productos = await clientToken.get('api/producto', {params: {page: 1,buscador:''}});
+            const available = await clientToken.get('api/producto/available', {params: {search}});
+            const notAvailable = await clientToken.get('api/producto/notAvailable', {params: {search}});
             Swal.fire(
                 'Stock agregado correctamente.',
                 'AudioCell-El sonido es tu voz',
                 'success'
             );
             dispatch({
-                type: CREAR_PRODUCTO,
-                productos: productos.data.productos,
-                productosNoDisponibles: productos.data.productosNoDisponibles
+                type: ADD_PRODUCT_STOCK,
+                availableProducts: available.data.products,
+                notAvailableProducts: notAvailable.data.products
+            });
+        } catch(error){
+            console.log(error);
+            dispatch({
+                type: ADD_PRODUCT_STOCK_ERROR
+            });
+        }
+    }
+}
+
+// Delete product stock
+export const deleteStock = (id, search="") => {
+    return async (dispatch) => {
+        try {
+            await clientToken.put('api/producto/stock', {id});
+            const available = await clientToken.get('api/producto/available', {params: {search}});
+            const notAvailable = await clientToken.get('api/producto/notAvailable', {params: {search}});
+            Swal.fire(
+                'Stock eliminado correctamente.',
+                'AudioCell-El sonido es tu voz',
+                'success'
+            );
+            dispatch({
+                type: ELIMINAR_STOCK,
+                availableProducts: available.data.products,
+                notAvailableProducts: notAvailable.data.products
             });
         } catch(error){
             console.log(error);
@@ -123,6 +184,7 @@ export const crearProductoStock = (producto) => {
     }
 }
 
+// Edit product
 export const editarProducto = (producto) => {
     return async (dispatch) => {
         try {
@@ -135,11 +197,12 @@ export const editarProducto = (producto) => {
             }
             const resp = await clientToken.put('api/producto', producto);
             if(resp.data.data === 1){
-                const productos = await clientToken.get('api/producto', {params: {page: 1, buscador: ''}});
+                const available = await clientToken.get('api/producto/available', {params: {search:""}});
+                const notAvailable = await clientToken.get('api/producto/notAvailable', {params: {search:""}});
                 dispatch({
                     type: EDITAR_PRODUCTO,
-                    productos: productos.data.productos,
-                    productosNoDisponibles: productos.data.productosNoDisponibles
+                    availableProducts: available.data.products,
+                    notAvailableProducts: notAvailable.data.products
                 });
                 Swal.fire(
                     'Producto editado correctamente.',
@@ -223,27 +286,6 @@ export const getReporteProductosStock = (formFechas) => {
             dispatch({
                 type: OBTENER_REPORTE_STOCK,
                 productos: data.results
-            });
-        } catch(error){
-            console.log(error);
-        }
-    }
-}
-
-export const deleteStock = (id) => {
-    return async (dispatch) => {
-        try {
-            await clientToken.put('api/producto/stock', {id});
-            const productos = await clientToken.get('api/producto', {params: {page: 1,buscador:''}});
-            Swal.fire(
-                'Stock eliminado correctamente.',
-                'AudioCell-El sonido es tu voz',
-                'success'
-            );
-            dispatch({
-                type: ELIMINAR_STOCK,
-                productos: productos.data.productos,
-                productosNoDisponibles: productos.data.productosNoDisponibles
             });
         } catch(error){
             console.log(error);

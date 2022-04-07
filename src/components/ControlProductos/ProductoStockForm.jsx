@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Select from 'react-select';
 import {Field, reduxForm} from 'redux-form';
 
@@ -28,14 +28,29 @@ const renderField = ({
     </div>
 );
 
-
 const ProductoStockForm = (props) => {    
-    // STATE
+    // Props
     const {handleSubmit,productos,setProductoStock,productoStock} = props;
+    // State
+    // Products select
+    const [productsOptions, setProductOptions] = useState([]);
     
+
     const handleInputChange = (e) => {
         setProductoStock(e);
     }
+
+    // Transform all products data to use in select
+    useEffect(() => {
+        if(productos != null)
+        {
+            let productsTransform = productos.map((prod) => ({
+                value: prod.id,
+                label: `${prod.categoria}-${prod.name}${prod.color != null ? `-${prod.color}` : ''}`
+            }));
+            setProductOptions([...productsTransform]);
+        }
+    }, [productos]);
 
     return (
         <form onSubmit={handleSubmit}>
@@ -43,7 +58,7 @@ const ProductoStockForm = (props) => {
                 <label>Seleccione un producto</label>
                 <Select
                     name="producto"
-                    options={productos}
+                    options={productsOptions}
                     onChange={handleInputChange}
                     value={productoStock}
                 />

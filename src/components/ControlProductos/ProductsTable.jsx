@@ -4,7 +4,6 @@ import {AiFillDelete} from 'react-icons/ai';
 import {BsListCheck} from 'react-icons/bs';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { obtenerProductos } from '../Redux/actions/productosActions';
 
 const ProductsTable = ({data, handleSelectProducto, handleDelete, usuario, totalProductos, handleListStock}) => {
     // HOOKS
@@ -24,10 +23,6 @@ const ProductsTable = ({data, handleSelectProducto, handleDelete, usuario, total
         }
       }
     }, [usuario])
-
-    useEffect(() => {
-      dispatch(obtenerProductos(actualPage));
-    }, [actualPage, dispatch])
 
     return (
       <>

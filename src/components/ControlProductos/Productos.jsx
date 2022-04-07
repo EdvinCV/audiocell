@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import ProductsTable from './ProductsTable';
 import {useDispatch, useSelector} from 'react-redux';
-import { obtenerProductos, crearProducto, seleccionarProducto, editarProducto, deleteProducto, obtenerTotalProductos, getReporteProductos, crearProductoStock, obtenerListadoStock, getReporteProductosStock, obtenerTotalInvertido, getCategoryReport } from '../Redux/actions/productosActions';
+import { obtenerProductos, crearProducto, seleccionarProducto, editarProducto, deleteProducto, obtenerTotalProductos, getReporteProductos, crearProductoStock, obtenerListadoStock, getReporteProductosStock, obtenerTotalInvertido, getCategoryReport, getAllProducts, getAvailableProducts, getNotAvailableProducts, clearStockList } from '../Redux/actions/productosActions';
 import { obtenerUsuario } from '../Redux/actions/usersActions';
 import ProductoForm from './ProductoForm';
 import { Modal, Tabs, Tab } from 'react-bootstrap';
@@ -38,19 +38,18 @@ const Productos = () => {
     }
     // Verificar si usuario logueado es admin
     const [admin, setAdmin] = useState(false);
-    // Opciones de productos para select
-    const [productsOptions, setProductOptions] = useState([]);
-    // Valor del buscador
-    const [buscador, setBuscador] = useState("");
+    // Search values
+    const [searchAvailableProducts, setSearchAvailableProducts] = useState("");
+    const [searchNotAvailableProducts, setSearchNotAvailableProducts] = useState("");
     // Loader
     const [loading, setLoading] = useState(true);
     // Dispatch
     const dispatch = useDispatch();
     
     // STORE
-    const totalProductos = useSelector((state) => state.productos.totalProductos);
-    const productos = useSelector((state) => state.productos.productos);
-    const productosNoDisponibles = useSelector((state) => state.productos.productosNoDisponibles);
+    const availableProducts = useSelector((state) => state.productos.availableProducts);
+    const notAvailableProducts = useSelector((state) => state.productos.notAvailableProducts);
+    const allProducts = useSelector((state) => state.productos.allProducts);
     const categorias = useSelector((state) => state.categorias.categorias);
     const usuario = useSelector((state) => state.usuarios);
     const listadoStock = useSelector((state) => state.productos.listadoStock);
@@ -58,16 +57,17 @@ const Productos = () => {
     const totalInvertido = useSelector((state) => state.productos.totalInvertido);
     const categoryReport = useSelector((state) => state.productos.categoryReport);
     
-    // Obtener data del store
+    // Get store data
     useEffect(() => {
-        dispatch(getReporteProductos());
-        dispatch(obtenerTotalProductos());
-        dispatch(obtenerProductos());
-        dispatch(obtenerCategorias());
         dispatch(obtenerUsuario());
+        dispatch(obtenerCategorias());
+        dispatch(getAvailableProducts());
+        dispatch(getNotAvailableProducts());
+        dispatch(getReporteProductos());
         dispatch(obtenerTotalInvertido());
     }, [dispatch])
 
+    // Get actual user
     useEffect(() => {
         if(usuario){
             if(usuario.me){
@@ -77,37 +77,37 @@ const Productos = () => {
                     setAdmin(false);
                 }
             }
+            setLoading(false);
         }
     }, [usuario])
-    
+
+    // Search available products
     useEffect(() => {
-        setLoading(false);
-    }, [totalProductos]);
-    // Transformación de data de productos.
-    useEffect(() => {
-        if(productos && productosNoDisponibles){
-            let productsTransform = productos.map((prod) => ({
-                value: prod.id,
-                label: `${prod.categoria}-${prod.name}${prod.color != null ? `-${prod.color}` : ''}`
-            }));
-            let productsTransformNo = productosNoDisponibles.map((prod) => ({
-                value: prod.id,
-                label: `${prod.categoria}-${prod.name}${prod.color != null ? `-${prod.color}` : ''}`
-            }));
-            setProductOptions([...productsTransform, ...productsTransformNo]);
-        }
-    }, [productos,productosNoDisponibles])
-    // Obtener información de buscador
-    useEffect(() => {
-        if(buscador === ""){
-            dispatch(obtenerTotalProductos());
-            dispatch(obtenerProductos());
+        if(searchAvailableProducts === ""){
+            dispatch(getAvailableProducts());
         } else {
-            dispatch(obtenerTotalProductos(buscador));
-            dispatch(obtenerProductos(1,buscador));
+            dispatch(getAvailableProducts(searchAvailableProducts));
         }
-    }, [buscador, dispatch])
-    // Submit crear producto
+    }, [searchAvailableProducts, dispatch]);
+    // Search not available products
+    useEffect(() => {
+        if(searchNotAvailableProducts === ""){
+            dispatch(getNotAvailableProducts());
+        } else {
+            dispatch(getNotAvailableProducts(searchNotAvailableProducts));
+        }
+    }, [searchNotAvailableProducts, dispatch]);
+
+    // Change available search
+    const handleChangeAvailableSearch = (e) => {
+        setSearchAvailableProducts(e.target.value);
+    }
+    // Change not available search 
+    const handleChangeNotAvailableSearch = (e) => {
+        setSearchNotAvailableProducts(e.target.value);
+    }
+    
+    // Create product submit
     const handleSubmit = (values) => {
         setShow(false);
         dispatch(crearProducto(values));
@@ -192,6 +192,7 @@ const Productos = () => {
             allowOutsideClick: () => !Swal.isLoading()
             }).then((result) => {
                 if (result.isConfirmed) {
+                    dispatch(getAllProducts());
                     setShowStock(true);
                 }
             });
@@ -206,10 +207,6 @@ const Productos = () => {
         setShowFormEdit(false);
         dispatch(editarProducto(values));
         setLoading(false);
-    }
-    // Cambiar valor del buscador
-    const handleChangeBuscador = (e) => {
-        setBuscador(e.target.value);
     }
     // Eliminar producto
     const handleDelete = (id) => {
@@ -300,137 +297,57 @@ const Productos = () => {
     } else {
         return (
             <div className="contenedor-controlProductos">
-            <Tabs defaultActiveKey="home" id="uncontrolled-tab-example" className="mb-2 mt-10">
-                <Tab eventKey="home" title="Control Productos">
+            <Tabs defaultActiveKey="home" id="uncontrolled-tab-example" className="mb-2">
+                <Tab eventKey="home" title="Productos Disponibles">
                     <div className="contenedor-productos">
-                    <h1>Control de productos</h1>
-                    <div
-                        style={{display: "flex", flexWrap: "wrap", justifyContent:"space-between"}}
+                        <h1>Control de productos</h1>
+                        <div
+                            style={{display: "flex", flexWrap: "wrap", justifyContent:"space-between"}}
                         >
-                        {
-                            admin &&
-                                <>
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={() => setShow(true)}
-                                >
-                                    Agregar Producto
-                                </button>
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={handleAgregarStock}
-                                >
-                                    Agregar Stock
-                                </button>
-                                </>
-                        }
-                        <input
-                            name="buscador"
-                            className="form-control"
-                            style={{maxWidth:"300px", marginTop:"2px"}}
-                            type="text"
-                            value={buscador}
-                            onChange={handleChangeBuscador}
-                            placeholder="Buscar..."
-                        />
-                    </div>
-                    <hr/>
-                    <div
-                        style={{overflowY: "scroll", textAlign: "center", maxHeight:"700px"}}
-                    >
-                        {
-                            productos ? (
-                                productos.length > 0 ? (
-                                    <ProductsTable
-                                        data={productos}
-                                        handleSelectProducto={handleSelectProducto}
-                                        handleDelete={handleDelete}
-                                        usuario={usuario}
-                                        totalProductos={totalProductos}
-                                        handleListStock={handleListStock}
-                                    />
-                                ) : (
-                                    <h4>No existen productos...</h4>
-                                )
-                            ) : (
-                                <Loader
-                                    type="ThreeDots"
-                                    color="#17174a"
-                                    height={100}
-                                    width={100}
-                                />
-                            )
-                        }
-                    </div>
-                    {/* FORM PARA CREAR NUEVO PRODUCTO */}
-                    <Modal
-                        show={show}
-                        onHide={() => {setShow(false)}}
-                        backdrop="static"
-                        keyboard={false}
-                        >
-                        <Modal.Header closeButton>
-                            <Modal.Title>Crear nuevo producto</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <ProductoForm
-                                onSubmit={handleSubmit}
-                                categorias={categorias}
-                            />
-                        </Modal.Body>
-                    </Modal>
-                    {/* FORM PARA EDITAR PRODUCTO */}
-                    <Modal
-                        show={showFormEdit}
-                        onHide={() => {setShowFormEdit(false)}}
-                        backdrop="static"
-                        keyboard={false}
-                        >
-                        <Modal.Header closeButton>
-                            <Modal.Title>Editar producto</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <ProductoEditForm
-                                onSubmit={handleSubmitEdit}
-                            />
-                        </Modal.Body>
-                    </Modal>
-                    {/* FORM PARA AGREGAR STOCK DE PRODUCTO */}
-                    <Modal
-                        show={showStock}
-                        onHide={() => {setShowStock(false)}}
-                        backdrop="static"
-                        keyboard={false}
-                        >
-                        <Modal.Header closeButton>
-                            <Modal.Title>Stock de producto</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <ProductoStockForm 
-                                onSubmit={handleSubmitStock}
-                                productos={productsOptions}
-                                setProductoStock={setProductoStock}
-                                productoStock={productoStock}
-                            />
-                        </Modal.Body>
-                    </Modal>
-                    {/* LISTADO DE STOCKS */}
-                    <Modal
-                        show={showListadoStock}
-                        onHide={() => {setShowListadoStock(false)}}
-                        backdrop="static"
-                        keyboard={false}
-                        >
-                        <Modal.Header closeButton>
-                            <Modal.Title>Listado de Stock</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
                             {
-                                listadoStock ? (
-                                    <ListadoStock 
-                                        stocks={listadoStock}
-                                        setShowListadoStock={setShowListadoStock}
-                                    />
+                                admin &&
+                                    <>
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={() => setShow(true)}
+                                        >
+                                            Agregar Producto
+                                        </button>
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={handleAgregarStock}
+                                        >
+                                            Agregar Stock
+                                        </button>
+                                    </>
+                            }
+                            <input
+                                name="searchAvailableProducts"
+                                className="form-control"
+                                style={{maxWidth:"300px", marginTop:"2px"}}
+                                type="text"
+                                value={searchAvailableProducts}
+                                onChange={handleChangeAvailableSearch}
+                                placeholder="Buscar producto..."
+                            />
+                        </div>
+                        <hr/>
+                        <div
+                            style={{overflowY: "scroll", textAlign: "center", maxHeight:"700px"}}
+                        >
+                            {
+                                availableProducts ? (
+                                    availableProducts.length > 0 ? (
+                                        <ProductsTable
+                                            data={availableProducts}
+                                            handleSelectProducto={handleSelectProducto}
+                                            handleDelete={handleDelete}
+                                            usuario={usuario}
+                                            handleListStock={handleListStock}
+                                        />
+                                    ) : (
+                                        <h4>No existen productos...</h4>
+                                    )
                                 ) : (
                                     <Loader
                                         type="ThreeDots"
@@ -440,8 +357,89 @@ const Productos = () => {
                                     />
                                 )
                             }
-                        </Modal.Body>
-                    </Modal>
+                        </div>
+                        {/* FORM PARA CREAR NUEVO PRODUCTO */}
+                        <Modal
+                            show={show}
+                            onHide={() => {setShow(false)}}
+                            backdrop="static"
+                            keyboard={false}
+                            >
+                            <Modal.Header closeButton>
+                                <Modal.Title>Crear nuevo producto</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <ProductoForm
+                                    onSubmit={handleSubmit}
+                                    categorias={categorias}
+                                />
+                            </Modal.Body>
+                        </Modal>
+                        {/* FORM PARA EDITAR PRODUCTO */}
+                        <Modal
+                            show={showFormEdit}
+                            onHide={() => {setShowFormEdit(false)}}
+                            backdrop="static"
+                            keyboard={false}
+                            >
+                            <Modal.Header closeButton>
+                                <Modal.Title>Editar producto</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <ProductoEditForm
+                                    onSubmit={handleSubmitEdit}
+                                />
+                            </Modal.Body>
+                        </Modal>
+                        {/* FORM PARA AGREGAR STOCK DE PRODUCTO */}
+                        <Modal
+                            show={showStock}
+                            onHide={() => {setShowStock(false)}}
+                            backdrop="static"
+                            keyboard={false}
+                            >
+                            <Modal.Header closeButton>
+                                <Modal.Title>Stock de producto</Modal.Title>
+                            </Modal.Header>
+                            {
+                                <Modal.Body>
+                                    <ProductoStockForm 
+                                        onSubmit={handleSubmitStock}
+                                        productos={allProducts}
+                                        setProductoStock={setProductoStock}
+                                        productoStock={productoStock}
+                                    />
+                                </Modal.Body>
+                            }
+                        </Modal>
+                        {/* LISTADO DE STOCKS */}
+                        <Modal
+                            show={showListadoStock}
+                            onHide={() => {setShowListadoStock(false)}}
+                            backdrop="static"
+                            keyboard={false}
+                            >
+                            <Modal.Header closeButton>
+                                <Modal.Title>Listado de Stock</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                {
+                                    listadoStock ? (
+                                        <ListadoStock 
+                                            stocks={listadoStock}
+                                            setShowListadoStock={setShowListadoStock}
+                                        />
+                                    ) : (
+                                        <Loader
+                                            type="ThreeDots"
+                                            color="#17174a"
+                                            height={100}
+                                            width={100}
+                                        />
+                                    )
+                                }
+                            </Modal.Body>
+                        </Modal>
                     </div>
                 </Tab>
                 <Tab eventKey="homeNo" title="No Disponibles">
@@ -468,13 +466,13 @@ const Productos = () => {
                                 </>
                         }
                         <input
-                            name="buscador"
+                            name="searchNotAvailableProducts"
                             className="form-control"
                             style={{maxWidth:"300px", marginTop:"2px"}}
                             type="text"
-                            value={buscador}
-                            onChange={handleChangeBuscador}
-                            placeholder="Buscar..."
+                            value={searchNotAvailableProducts}
+                            onChange={handleChangeNotAvailableSearch}
+                            placeholder="Buscar producto..."
                         />
                     </div>
                     <hr/>
@@ -482,14 +480,13 @@ const Productos = () => {
                         style={{overflowY: "scroll", textAlign: "center", maxHeight:"700px"}}
                     >
                         {
-                            productosNoDisponibles ? (
-                                productosNoDisponibles.length > 0 ? (
+                            notAvailableProducts ? (
+                                notAvailableProducts.length > 0 ? (
                                     <ProductsTable
-                                        data={productosNoDisponibles}
+                                        data={notAvailableProducts}
                                         handleSelectProducto={handleSelectProducto}
                                         handleDelete={handleDelete}
                                         usuario={usuario}
-                                        totalProductos={totalProductos}
                                         handleListStock={handleListStock}
                                     />
                                 ) : (
@@ -551,7 +548,7 @@ const Productos = () => {
                         <Modal.Body>
                             <ProductoStockForm 
                                 onSubmit={handleSubmitStock}
-                                productos={productsOptions}
+                                productos={allProducts}
                                 setProductoStock={setProductoStock}
                                 productoStock={productoStock}
                             />
@@ -560,7 +557,7 @@ const Productos = () => {
                     {/* LISTADO DE STOCKS */}
                     <Modal
                         show={showListadoStock}
-                        onHide={() => {setShowListadoStock(false)}}
+                        onHide={() => {setShowListadoStock(false); dispatch(clearStockList())}}
                         backdrop="static"
                         keyboard={false}
                         >
@@ -589,7 +586,7 @@ const Productos = () => {
                 </Tab>
                 <Tab eventKey="reporte" title="Reporte Stock">
                     <div className="contenedor-productos">
-                        <h1>Reporte de Stock</h1>
+                        <h1>Stock Ingresado</h1>
                         <div
                             style={{display: "flex", justifyContent:"space-around", flexWrap:"wrap"}}
                         >
@@ -635,7 +632,7 @@ const Productos = () => {
                 </Tab>
                 <Tab eventKey="categorias" title="Reporte categoría">
                 <div className="contenedor-ventas">
-                    <h1>Reporte Categorías</h1>
+                    <h1>Productos Categoría</h1>
                     <div
                         style={{display: "flex", justifyContent:"space-around", flexWrap:"wrap"}}
                     >
@@ -679,11 +676,11 @@ const Productos = () => {
                 </Tab>
                 {
                     admin &&
-                        <Tab eventKey="total" title="Inventario">
+                        <Tab eventKey="total" title="Inversión">
                             <div className="contenedor-productos">
                                 <div className="card text-center">
                                     <div className="card-header">
-                                        <h3>Información de inversión</h3>
+                                        <h3>Información de inversión estimada</h3>
                                     </div>
                                     <div className="card-body">
                                         <h3>Total: <b>Q.{totalInvertido ? totalInvertido : 0}</b> </h3>

@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { obtenerUsuario } from './Redux/actions/usersActions';
 import Loader from 'react-loader-spinner';
+import Swal from 'sweetalert2';
 
 const Home = () => {
     // HOOKS
@@ -88,7 +89,7 @@ const Home = () => {
                 <div 
                     className="contenedor1"
                     id="uno"
-                    onClick={() => history.push("/recargas")}
+                    onClick={() => Swal.fire('Modulo en desarrollo...', '', 'info')}
                 >
                     <img  className="icon" src="icons/sim-card.png" width="50px" alt="VENTAS"></img>
                     <p className="texto">RECARGAS</p>
